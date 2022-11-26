@@ -6,14 +6,14 @@ function Footer() {
     <div className='w-full relative flex flex-col justify-center items-center'>
         <img src={footer} className='h-[450px] md:h-[300px] object-cover' alt="" />
         <div className='absolute w-10/12 lg:max-w-[1240px] mx-auto flex flex-col md:flex-row gap-3 justify-between'>
-            <ul className='mt-5'>
+            <ul className='mt-5 font-light'>
                 <li className='text-md font-bold text-gray-600'>SERVICES</li>
                 <li>Emergency Checkup</li>
                 <li>Monthly Checkup</li>
                 <li>Weekly Checkup</li>
                 <li>Deep Checkup</li>
             </ul>
-            <ul className='mt-5'>
+            <ul className='mt-5 font-light'>
                 <li className='text-md font-bold text-gray-600'>ORAL HEALTH</li>
                 <li>Emergency Checkup</li>
                 <li>Monthly Checkup</li>
@@ -24,7 +24,7 @@ function Footer() {
                 <li>New York - 101010 Hudson</li>
             </ul>
         </div>
-        <p className='absolute bottom-5 font-semibold text-neutral-800'>Copyright 2022 All Rights Reserved</p>
+        <p className='absolute bottom-4  font-semibold text-neutral-800'>Copyright 2022 All Rights Reserved</p>
     </div>
   )
 }

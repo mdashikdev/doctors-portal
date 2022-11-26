@@ -32,7 +32,19 @@
   }, {
     "id": 2,
     "category": "Cosmetic Denistry",
-    "services": null
+    "services": [
+      {
+          "id": 1,
+          "services": "Cosmetic Procedures",
+          "from":"Wed Nov 23 2022 19:00:04",
+          "to":"Wed Nov 23 2022 20:00:04"
+        }, {
+          "id": 2,
+          "services": "Veneers",
+          "from":"Wed Nov 23 2022 15:00:04",
+          "to":"Wed Nov 23 2022 16:00:04"
+        }
+  ]
   }, {
     "id": 3,
     "category": "Teeth Cleaning",

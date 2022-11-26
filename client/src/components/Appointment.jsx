@@ -5,7 +5,7 @@ import doctorSm from '../images/doctor-small.png';
 function Appointment() {
   return (
     <div className='relative w-full flex justify-center h-fit py-10 lg:mt-36'>
-        <img src={appointment}  className='lg:max-h-[500px] md:max-h-[400px] min-h-[400px] h-full w-full' alt="" />
+        <img src={appointment}  className='lg:max-h-[500px] md:max-h-[400px] min-h-[530px] h-full w-full' alt="" />
         <div className='w-full md:w-11/12 absolute top-0 h-full flex flex-col md:flex-row justify-center items-center'>
             <img src={doctorSm} className='w-auto lg:max-w-fit lg:mt-[-150px] md:max-w-[400px] hidden md:block' alt="" />
             <div className='flex flex-col justify-center gap-4 px-5 md:p-0'>

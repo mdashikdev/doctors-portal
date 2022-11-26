@@ -1,55 +1,75 @@
-import React, { useState } from 'react';
-import Footer from './Footer';
+import React, { useContext,createContext, useState } from 'react';
 import Service from './Service';
 import fakedata from '../fakedata.json';
 import SelectedServiceBook from './SelectedServiceBook';
+import { GiTireIronCross } from 'react-icons/gi';
+import dayjs from 'dayjs';
+import { AllContext } from '../App';
+
+export const SelectedContext = createContext();
 
 function AvailableServices() {
     const [services, setservices] = useState(fakedata);
     const [selectedService, setselectedService] = useState();
-    const [book, setbook] = useState();
+    const [book, setbook] = useState({});
     const [popup, setpopup] = useState(false);
+    const contexts = useContext(AllContext);
 
     const handleSelectedService = (name) => {
         setselectedService(services.find(service => service.category.toLowerCase() === name.toLowerCase()))
     }
-    const handleBook = (name) => {
-        setpopup(true);
-        setbook(name);
-    }
 
   return (
-        <div className='w-full md:w-8/12'>
+        <div className='w-full md:w-10/12'>
             <div className='mt-16 w-full'>
-                <h4 className='text-[#19D3AE] text-lg font-semibold text-center'>Available Services on April 30,2022</h4>
-                <p className='text-gray-500 text-md text-center'>Please select a service</p>
+                <h4 className='text-center text-[#19D3AE] text-lg font-normal mt-16'>Available Services on April 30,2022</h4>
+                <p className='text-center text-4xl text-black/80 font-normal mb-10'>Please select a service</p>
             </div>
             <div className='grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3 w-full'>
                 {
-                    services.map((service,idx) => <Service info={service} handleSelectedService={handleSelectedService} key={idx} /> )
+                    contexts?.services?.map((service,idx) => <Service info={service} handleSelectedService={handleSelectedService} key={idx} /> )
                 }
             </div>
                 {
                     selectedService && 
-                    <>{
+                    <SelectedContext.Provider value={[setpopup,setbook]}>{
                         selectedService.services ? (
                             <>
-                                <h4 className='text-[#19D3AE] text-lg font-semibold text-center my-20'>Available slots for {selectedService.category}</h4>
+                                <h4 className='text-center text-[#19D3AE] text-lg font-normal mt-20'>Available slots for {selectedService.category}</h4>
                                 <div className='grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3 w-full'>
                                     {
-                                        selectedService?.services.map((ser,idx) => <SelectedServiceBook key={idx} info={ser} handleBook={handleBook} />)
+                                        selectedService?.services.map((ser,idx) => <SelectedServiceBook key={idx} info={ser} />)
                                     }
                                 </div>
                             </>
                         )
                         : <h1 className='text-xl text-center mt-5'>No Service Found</h1>
                     }
-                    </>
+                    </SelectedContext.Provider>
  
                 }
                 {
                     popup &&
-                    <div onClick={() => setpopup(false)} className='absolute w-full h-screen left-0 bg-slate-900/50'></div>
+                    <div className='fixed w-full h-full top-0 left-0 backdrop-blur-md z-10'></div>
+                }
+                {
+                    popup &&
+                    <div className='fixed top-0 left-0 w-full h-full z-20 flex justify-center md:items-center items-end'>
+                        <div className='lg:w-1/3 md:w-1/2 w-full h-fit p-2 rounded-t-2xl md:rounded-2xl border border-neutral-500 bg-white shadow-lg'>
+                            <div className='flex justify-between'>
+                                <h3 className='text-2xl font-semibold'>{book.services}</h3>
+                                <GiTireIronCross onClick={() => setpopup(false)} className='p-2 bg-neutral-700 hover:bg-neutral-800 duration-200 rounded-full text-4xl text-white cursor-pointer'/>
+                            </div>
+                            <form action="#" className='flex flex-col gap-3 mt-5' onSubmit={(e)=> e.preventDefault()}>
+                                <input type="text" className='w-full p-3 rounded-xl bg-neutral-200/80 text-md font-semibold focus:outline-none' value={`${dayjs(`${book.from}`).format('MMM DD, YYYY')}`} />
+                                <input type="text" className='w-full p-3 rounded-xl bg-neutral-200/80 text-md font-semibold focus:outline-none' value={`${dayjs(`${book.from}`).format('hh:mm A')} - ${dayjs(`${book.to}`).format('hh:mm A')}`} />
+                                <input type="text" placeholder='Full Name' className='w-full p-3 rounded-xl bg-transparent border border-neutral-500 text-md font-semibold focus:outline-none' />
+                                <input type="number" placeholder='Phone Number' className='w-full p-3 rounded-xl bg-transparent border border-neutral-500 text-md font-semibold focus:outline-none' />
+                                <input type="email" placeholder='Email' className='w-full p-3 rounded-xl bg-transparent border border-neutral-500 text-md font-semibold focus:outline-none' />
+                                <input type="submit" value='SUBMIT' className='w-full px-4 py-3 rounded-xl text-white bg-neutral-800 hover:bg-neutral-900 duration-200 cursor-pointer' />
+                            </form>
+                        </div>
+                    </div>
                 }
         </div>
   )
