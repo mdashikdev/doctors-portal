@@ -81,7 +81,7 @@ function Header() {
                 {
                     contexts.currentUser?.email ?
                     <>
-                        <NavLink  to='/profile' className='navbtn flex justify-between items-center'>
+                        <NavLink  to='/profile' onClick={() => setmenu(!menu)}  className='navbtn flex justify-between items-center'>
                             <h4 className='text-xl font-bold'>{`${contexts.currentUser?.name}`}</h4>
                             <img src={`${contexts.currentUser?.avatar}`} title={`${contexts.currentUser?.name}`} className='w-10 h-10 rounded-full object-cover ring ring-blue-500' alt="" />
                         </NavLink>

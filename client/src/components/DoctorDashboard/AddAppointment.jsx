@@ -26,7 +26,6 @@ function AddAppointment() {
         <div className='w-11/12 md:10/12 h-fit bg-white min-h-screen rounded-xl overflow-hidden flex justify-center py-5 shadow-sm'>
             <form action="" className='w-11/12 md:7/12 lg:w-4/12 flex flex-col gap-3 '>
                 <h3 className='text-2xl font-semibold'>Add Appointment</h3>
-
                 <div>
                     <h2>From</h2>
                     <DateTimePicker onChange={setdatefrom} value={datefrom} className='w-full p-3 mt-3 rounded-md bg-transparent border border-neutral-500 text-md font-semibold focus:outline-none' />
@@ -35,7 +34,6 @@ function AddAppointment() {
                     <h2>To</h2>
                     <DateTimePicker onChange={setdateto} value={dateto} className='w-full p-3 mt-3 rounded-md bg-transparent border border-neutral-500 text-md font-semibold focus:outline-none' />
                 </div>
-
                 <input type="button" onClick={handleAddAppointment} value='Add Appointment' className='w-full px-4 py-3 rounded-md text-white bg-neutral-800 hover:bg-neutral-900 duration-200 cursor-pointer' />
             </form>
         </div>

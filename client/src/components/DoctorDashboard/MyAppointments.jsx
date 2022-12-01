@@ -5,6 +5,7 @@ import 'react-day-picker/dist/style.css';
 import axios from 'axios';
 import { AllContext, MainApi } from '../../App';
 import { ClapSpinner } from "react-spinners-kit";
+import { AiOutlineDelete } from 'react-icons/ai';
 
 function MyAppointments() {
     const [togglecalender, settogglecalender] = useState(false);
@@ -17,16 +18,30 @@ function MyAppointments() {
 
     useEffect(() => {
         setloading(true);
-      axios.post(`${MainApi}/currenusertAppointments`,{user:contexts.currentUser._id})
-      .then(res => {
-        setloading(false);
-        setappointments(res.data);
-      })
-      .catch(err => console.log(err))
+        currentAppointments();
     }, [])
-    
-    console.log(appointments)
 
+    const currentAppointments = () => {
+        axios.post(`${MainApi}/currenusertAppointments`,{user:contexts.currentUser._id})
+        .then(res => {
+          setloading(false);
+          setappointments(res.data);
+        })
+        .catch(err => console.log(err))
+    }
+    const handleDeleteAppointment = (id) => {
+        axios.post(`${MainApi}/deleteAppointmentById`,{id:id})
+        .then(res => {
+            if (res.data === true) {
+                currentAppointments();
+                contexts.setalert({status:'ok',message:'Appointment Deleted!'});
+            }else{
+                console.log(res)
+            }
+        })
+        .catch(err => console.log(err))
+    } 
+    
   return (
     loading ? <ClapSpinner className='mt-10' color='#ea580b' size={35} loading={loading}/> :
 
@@ -39,27 +54,26 @@ function MyAppointments() {
             />
             }
         </div>
-        <div className='w-11/12 md:10/12 h-fit bg-white rounded-xl overflow-hidden shadow-sm'>
+        <div className='w-11/12 md:w-10/12 min-w-[500px] overflow-auto h-fit bg-white rounded-xl shadow-sm'>
             <ul className='flex justify-between py-2 text-lg font-bold bg-neutral-200'>
-                <li className='text-center w-full'>NAME</li>
                 <li className='text-center w-full'>SERVICE</li>
+                <li className='text-center w-full'>DATE</li>
                 <li className='text-center w-full'>TIME</li>
+                <li className='text-center w-full'>ACTION</li>
             </ul>
-            <ul className='flex justify-between py-2 my-3 text-lg font-semibold bg-white'>
-                <li className='text-center w-full'>John Doe</li>
-                <li className='text-center w-full'>Teeth Orthodontics</li>
-                <li className='text-center w-full'>08:00 - 10:00 PM</li>
-            </ul>
-            <ul className='flex justify-between py-2 my-3 text-lg font-semibold bg-white'>
-                <li className='text-center w-full'>John Doe</li>
-                <li className='text-center w-full'>Teeth Orthodontics</li>
-                <li className='text-center w-full'>08:00 - 10:00 PM</li>
-            </ul>
-            <ul className='flex justify-between py-2 my-3 text-lg font-semibold bg-white'>
-                <li className='text-center w-full'>John Doe</li>
-                <li className='text-center w-full'>Teeth Orthodontics</li>
-                <li className='text-center w-full'>08:00 - 10:00 PM</li>
-            </ul>
+            {
+                appointments?.map( appt => {
+                    return (
+                        <ul className='flex justify-between py-2 my-3 text-lg font-semibold bg-white'>
+                            <li className='text-center w-full'>{appt?.Speciality}</li>
+                            <li className='text-center w-full'>{dayjs(`${appt?.datefrom}`).format('MMM D, YYYY')}</li>
+                            <li className='text-center w-full'>{dayjs(`${appt?.datefrom}`).format('hh:mm A')} - {dayjs(`${appt?.dateto}`).format('hh:mm A')}</li>
+                            <li className='text-center w-full flex justify-center gap-2'><AiOutlineDelete onClick={() => handleDeleteAppointment(`${appt?._id}`)} className='text-4xl cursor-pointer text-white bg-orange-500 hover:bg-orange-600 duration-200 px-2 py-1 rounded-lg '/></li>
+                        </ul>
+                    )
+                })
+            }
+
         </div>
     </div>
   )

@@ -1,22 +1,57 @@
-import React, { useContext,createContext, useState } from 'react';
+import React, { useContext,createContext, useState, useEffect } from 'react';
 import Service from './Service';
 import fakedata from '../fakedata.json';
 import SelectedServiceBook from './SelectedServiceBook';
 import { GiTireIronCross } from 'react-icons/gi';
 import dayjs from 'dayjs';
-import { AllContext } from '../App';
+import { AllContext, MainApi } from '../App';
+import axios from 'axios';
 
 export const SelectedContext = createContext();
 
 function AvailableServices() {
     const [services, setservices] = useState(fakedata);
     const [selectedService, setselectedService] = useState();
+    const [selectedServiceAppointments, setselectedServiceAppointments] = useState();
     const [book, setbook] = useState({});
     const [popup, setpopup] = useState(false);
+    const [allusers, setalluser] = useState()
     const contexts = useContext(AllContext);
 
+
+    useEffect(() => {
+        axios.get(`${MainApi}/getallusers`)
+        .then(res => {
+            if (res?.data?.length > 0) {
+                setalluser(res.data);
+
+            }else{
+                console.log(res);
+            }
+        })
+        .catch(err => console.log(err))
+    }, [])
+    
+
     const handleSelectedService = (name) => {
-        setselectedService(services.find(service => service.category.toLowerCase() === name.toLowerCase()))
+        setselectedService(services.find(service => service.category.toLowerCase() === name.toLowerCase()));
+
+        axios.get(`${MainApi}/appointments/`+ name)
+        .then(res => {
+            if (res?.data?.length > 0) {
+                const appointmentData = res?.data?.map(dt => {
+                    const user = allusers?.filter((usr,idx) => usr._id === dt.user);
+                    user[0].appointment = dt;
+                    return user
+                })
+                setselectedServiceAppointments(appointmentData);
+            }else{
+                setselectedServiceAppointments();
+                contexts.setalert({status:'error',message:'No appointment Available!'});
+            }
+        })
+        .catch(err => console.log(err))
+
     }
 
   return (
@@ -31,14 +66,14 @@ function AvailableServices() {
                 }
             </div>
                 {
-                    selectedService && 
+                    selectedServiceAppointments && 
                     <SelectedContext.Provider value={[setpopup,setbook]}>{
-                        selectedService.services ? (
+                        selectedServiceAppointments ? (
                             <>
-                                <h4 className='text-center text-[#19D3AE] text-lg font-normal mt-20'>Available slots for {selectedService.category}</h4>
-                                <div className='grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3 w-full'>
+                                <h4 className='text-center text-[#19D3AE] text-lg font-normal mt-20'>Available appointments for {selectedService?.category}</h4>
+                                <div className='grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3 w-full mt-3'>
                                     {
-                                        selectedService?.services.map((ser,idx) => <SelectedServiceBook key={idx} info={ser} />)
+                                        selectedServiceAppointments?.map((ser,idx) => <SelectedServiceBook key={idx} info={ser} /> )
                                     }
                                 </div>
                             </>
@@ -61,8 +96,8 @@ function AvailableServices() {
                                 <GiTireIronCross onClick={() => setpopup(false)} className='p-2 bg-neutral-700 hover:bg-neutral-800 duration-200 rounded-full text-4xl text-white cursor-pointer'/>
                             </div>
                             <form action="#" className='flex flex-col gap-3 mt-5' onSubmit={(e)=> e.preventDefault()}>
-                                <input type="text" className='w-full p-3 rounded-xl bg-neutral-200/80 text-md font-semibold focus:outline-none' value={`${dayjs(`${book.from}`).format('MMM DD, YYYY')}`} />
-                                <input type="text" className='w-full p-3 rounded-xl bg-neutral-200/80 text-md font-semibold focus:outline-none' value={`${dayjs(`${book.from}`).format('hh:mm A')} - ${dayjs(`${book.to}`).format('hh:mm A')}`} />
+                                <input type="text" className='w-full p-3 rounded-xl bg-neutral-200/80 text-md font-semibold focus:outline-none' value={`${dayjs(`${book.datefrom}`).format('MMM DD, YYYY')}`} />
+                                <input type="text" className='w-full p-3 rounded-xl bg-neutral-200/80 text-md font-semibold focus:outline-none' value={`${dayjs(`${book.datefrom}`).format('hh:mm A')} - ${dayjs(`${book.dateto}`).format('hh:mm A')}`} />
                                 <input type="text" placeholder='Full Name' className='w-full p-3 rounded-xl bg-transparent border border-neutral-500 text-md font-semibold focus:outline-none' />
                                 <input type="number" placeholder='Phone Number' className='w-full p-3 rounded-xl bg-transparent border border-neutral-500 text-md font-semibold focus:outline-none' />
                                 <input type="email" placeholder='Email' className='w-full p-3 rounded-xl bg-transparent border border-neutral-500 text-md font-semibold focus:outline-none' />

@@ -2,6 +2,7 @@ const app = require('express')();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const {ObjectId} = require('mongodb');
 require('dotenv').config();
 const { v4: uuidv4 } = require('uuid');
 const formidable = require('formidable');
@@ -322,7 +323,7 @@ client.connect(err => {
 
     //currenusertAppointments
     app.post('/currenusertappointments',(req,res) => {
-        appointments.find({_id:req.body.user})
+        appointments.find({user:req.body.user})
         .toArray((err,documents) => {
             if (!err) {
                 res.send(documents);
@@ -332,8 +333,43 @@ client.connect(err => {
         })
     });
 
+    //Fetch Appointments
+    app.get('/appointments/:ctName',(req,res) => {
+        appointments.find({Speciality : req.params.ctName})
+        .toArray((err,documents) => {
+            if (!err) {
+                res.send(documents);
+            }else{
+                res.send(err)
+            }
+        })
+    })
+
+    //Find User With id
+    app.post('/finduserbyId',(req,res) => {
+        alluser.find({_id : req.body.id})
+        .toArray((err,documents) => {
+            if (!err) {
+                res.send(documents)
+            }else{
+                console.log(err)
+            }
+        })
+    })
+
+    //Delete Appointment By Id
+    app.post('/deleteAppointmentById',(req,res) => {
+        const id = req.body.id;
+        appointments.deleteOne({_id:ObjectId(id)})
+        .then(dres => {
+            res.send(dres.acknowledged);
+        })
+        .catch(err => res.send(err.message))
+    })
+
     console.log('mongodb connected');
 });
+
 
 app.listen(3001,() => {
     console.log('server listening on port 3001');
