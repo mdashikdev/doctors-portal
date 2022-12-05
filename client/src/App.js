@@ -28,7 +28,7 @@ function App() {
   }, [])
 
   const contexts = {
-    services,users, setusers,currentUser, setcurrentUser,alert, setalert
+    services,users, setusers,currentUser, setcurrentUser,alert, setalert,mainloading, setmainloading
   }
 
   if (alert.message) {
@@ -40,10 +40,11 @@ function App() {
   return (
     <AllContext.Provider value={contexts}>
       <Header/>
+
       <Routes>
         <Route exact path='/' element={<Home/>} />
         <Route path='/home' element={<Home/>} />
-        <Route path='/appointment' element={<AppointmentPage/>} />
+        <Route path='/appointment' element={<PrivateRoute><AppointmentPage/></PrivateRoute>} />
         <Route path='/login' element={<Login/>} />
         <Route path='/dashboard' element={<PrivateRoute><Dashboard/></PrivateRoute>} />
         <Route path='/profile' element={<PrivateRoute><Profile/></PrivateRoute>} />

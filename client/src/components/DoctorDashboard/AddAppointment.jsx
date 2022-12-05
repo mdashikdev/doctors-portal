@@ -7,12 +7,14 @@ import './style.css';
 function AddAppointment() {
     const [datefrom, setdatefrom] = useState(new Date());
     const [dateto, setdateto] = useState(new Date());
+    const [fee, setfee] = useState()
     const contexts = useContext(AllContext);
 
     const handleAddAppointment = () => {
         if (contexts.currentUser?.services) {
-            axios.post(`${MainApi}/addnewappointment`, {user:contexts.currentUser._id,datefrom,dateto,Speciality:contexts.currentUser.services})
+            axios.post(`${MainApi}/addnewappointment`, {user:contexts.currentUser._id,datefrom,dateto,Speciality:contexts.currentUser.services,fee:fee})
             .then(res => {
+                setfee('')
                 contexts.setalert({status:'ok',message:'New appointment added successfully'});
             })
             .catch(err => console.error(err));
@@ -33,6 +35,10 @@ function AddAppointment() {
                 <div>
                     <h2>To</h2>
                     <DateTimePicker onChange={setdateto} value={dateto} className='w-full p-3 mt-3 rounded-md bg-transparent border border-neutral-500 text-md font-semibold focus:outline-none' />
+                </div>
+                <div>
+                    <h2>Fee ($)</h2>
+                    <input type="number" value={fee} onChange={(e) => setfee(`${e.target.value}`)} placeholder='Enter appointment fees' required className='px-4 py-2 rounded-xl bg-white border border-neutral-200 focus:outline-none w-full' />
                 </div>
                 <input type="button" onClick={handleAddAppointment} value='Add Appointment' className='w-full px-4 py-3 rounded-md text-white bg-neutral-800 hover:bg-neutral-900 duration-200 cursor-pointer' />
             </form>

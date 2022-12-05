@@ -22,6 +22,7 @@ client.connect(err => {
     const servicesCollection = db.collection("services");
     const alluser = db.collection("alluser");
     const appointments = db.collection("appointments");
+    const bookings = db.collection("bookings");
 
 
     app.post('/addnewservices', (req, res) => {
@@ -365,6 +366,50 @@ client.connect(err => {
             res.send(dres.acknowledged);
         })
         .catch(err => res.send(err.message))
+    })
+
+    //Add Appointment
+    app.post('/addAppointment',(req,res) => {
+        console.log(req.body)
+        
+        bookings.find({user:req.body.user,speciality : req.body.speciality,datefrom:req.body.datefrom,dateto : req.body.dateto})
+        .toArray((err,documents) => {
+            if (documents?.length > 0) {
+                res.send('Already booked this appointment');
+            }else{
+                bookings.insertOne(req.body)
+                .then(ares => {
+                    res.send(ares.acknowledged)
+                })
+                .catch(err => res.send(err.message))
+            }
+        })
+    })
+
+    //Get Current User Bookings
+    app.get('/getcurrentUserBookings/:userId',(req,res) => {
+        const userId = req.params.userId;
+        bookings.find({user:userId})
+        .toArray((err,documents) => {
+            if (!err) {
+                res.send(documents)
+            }else{
+                res.send(err.message)
+            }
+        })
+    })
+
+    //Get Current User Bookings
+    app.post('/getcurrentuserbookings',(req,res) => {
+        const userId = req.body.id;
+        bookings.find({doctor:`${userId}`})
+        .toArray((err,documents) => {
+            if (!err) {
+                res.send(documents)
+            }else{
+                res.send(err.message)
+            }
+        })
     })
 
     console.log('mongodb connected');

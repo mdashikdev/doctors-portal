@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import bg from '../images/bg.png';
 import chair from '../images/chair.png';
 import AvailableServices from './AvailableServices';
@@ -6,12 +6,17 @@ import Footer from './Footer';
 import './style.css';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
+import { AllContext } from '../App';
+import mainLoadingImg from '../images/running.gif';
+
 
 function AppointmentPage() {
     const [calender, setCalender] = useState(new Date());
     const [selected, setSelected] = useState();
+    const contexts = useContext(AllContext);
 
   return (
+    
     <>
         <div className='relative flex flex-col items-center overflow-hidden'>
         {/* top content */}

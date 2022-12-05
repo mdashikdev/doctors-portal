@@ -68,7 +68,7 @@ function MyAppointments() {
                             <li className='text-center w-full'>{appt?.Speciality}</li>
                             <li className='text-center w-full'>{dayjs(`${appt?.datefrom}`).format('MMM D, YYYY')}</li>
                             <li className='text-center w-full'>{dayjs(`${appt?.datefrom}`).format('hh:mm A')} - {dayjs(`${appt?.dateto}`).format('hh:mm A')}</li>
-                            <li className='text-center w-full flex justify-center gap-2'><AiOutlineDelete onClick={() => handleDeleteAppointment(`${appt?._id}`)} className='text-4xl cursor-pointer text-white bg-orange-500 hover:bg-orange-600 duration-200 px-2 py-1 rounded-lg '/></li>
+                            <li className='text-center w-full flex justify-center gap-2'><AiOutlineDelete onClick={() => window.confirm('Are you sure to delete your appointment?') && handleDeleteAppointment(`${appt?._id}`)} className='text-4xl cursor-pointer text-white bg-orange-500 hover:bg-orange-600 duration-200 px-2 py-1 rounded-lg '/></li>
                         </ul>
                     )
                 })
